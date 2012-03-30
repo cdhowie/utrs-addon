@@ -20,7 +20,6 @@
 
         var n;
         for (n = node.firstChild; n; n = n.nextSibling) {
-            if (callback(n)) { return; }
             walk(n, callback);
         }
     }
