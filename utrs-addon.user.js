@@ -107,7 +107,13 @@
     function addWikipediaLinkBox() {
         var textarea = document.getElementById('emailText');
 
-        if (!textarea) { return; }
+        if (!textarea) {
+            if (document.getElementById('editTemplate')) {
+                textarea = document.getElementById('text');
+            } else {
+                return;
+            }
+        }
 
         var outer = document.createElement('DIV');
 
