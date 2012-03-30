@@ -160,9 +160,8 @@
         pageEntry.onkeypress = function (e) {
             if (e.keyCode == 10 || e.keyCode == 13) {
                 insertLinkButton.click();
+                return false;
             }
-
-            return false;
         };
     }
 
