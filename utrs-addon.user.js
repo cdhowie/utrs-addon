@@ -66,6 +66,11 @@
         return a;
     }
 
+    // Shortcut to insert a node following another.
+    function insertNodeAfter(target, node) {
+        target.parentNode.insertBefore(node, target.nextSibling);
+    }
+
     // Remove onclick handlers from the navigation menu <td> elements, since
     // they break the expected middle-click functionality.  (Workaround for
     // UTRS-78.)
@@ -98,6 +103,70 @@
         header.appendChild(toggleLink);
     }
 
+    // Create a field to quickly insert a link to an enwp page
+    function addWikipediaLinkBox() {
+        var textarea = document.getElementById('emailText');
+
+        if (!textarea) { return; }
+
+        var outer = document.createElement('DIV');
+
+        outer.appendChild(document.createTextNode('Insert link to Wikipedia page: '));
+
+        var pageEntry = document.createElement('INPUT');
+        pageEntry.size = 50;
+        outer.appendChild(pageEntry);
+
+        outer.appendChild(document.createTextNode(' '));
+
+        var insertLinkButton = document.createElement('BUTTON');
+        insertLinkButton.appendChild(document.createTextNode('Insert'));
+        outer.appendChild(insertLinkButton);
+
+        insertNodeAfter(textarea, outer);
+
+        insertLinkButton.onclick = function () {
+            var linkTarget = 'http://en.wikipedia.org/wiki/' + pageEntry.value;
+            var linkTitle;
+
+            var selectionLength = textarea.selectionEnd - textarea.selectionStart;
+
+            if (selectionLength != 0) {
+                linkTitle = textarea.value.substr(textarea.selectionStart, selectionLength);
+            } else {
+                linkTitle = linkTarget;
+            }
+
+            var link = document.createElement('A');
+            link.appendChild(document.createTextNode(linkTitle));
+            link.href = linkTarget;
+
+            var linkText = link.outerHTML;
+
+            var selectionStart = textarea.selectionStart;
+
+            textarea.value =
+                textarea.value.substr(0, selectionStart) +
+                linkText +
+                textarea.value.substr(textarea.selectionEnd);
+
+            textarea.selectionStart = selectionStart;
+            textarea.selectionEnd = selectionStart + linkText.length;
+            textarea.focus();
+
+            return false;
+        };
+
+        pageEntry.onkeypress = function (e) {
+            if (e.keyCode == 10 || e.keyCode == 13) {
+                insertLinkButton.click();
+            }
+
+            return false;
+        };
+    }
+
     removeMenuClickHandlers();
     collapseAppealList('Awaiting user response');
+    addWikipediaLinkBox();
 })();
