@@ -14,13 +14,13 @@
             node = document.getElementById(node);
         }
 
-        if (!node) { return; }
+        if (!node) { return false; }
 
-        if (callback(node)) { return; }
+        if (callback(node)) { return true; }
 
         var n;
         for (n = node.firstChild; n; n = n.nextSibling) {
-            walk(n, callback);
+            if (walk(n, callback)) { return true; }
         }
     }
 
